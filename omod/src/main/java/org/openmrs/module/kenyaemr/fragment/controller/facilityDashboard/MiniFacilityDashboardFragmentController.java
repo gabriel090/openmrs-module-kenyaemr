@@ -16,10 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.reporting.builder.hiv.DashBoardCohorts;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
@@ -35,115 +32,99 @@ public class MiniFacilityDashboardFragmentController {
 
     private final Log log = LogFactory.getLog(this.getClass());
 
-    volatile FragmentModel sharedModel = new FragmentModel();
-
-    public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) throws InterruptedException {
+    public String controller(FragmentModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
 
 
-        Thread careAndTreatmentThread = new Thread(new CareAndTreatmentThread());
+        Integer  allPatients = 0,  patientsOnArt = 0,
+                patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
+                suppressedInLast12Months = 0, patientsScheduled =0, patientsSeen = 0,
+                checkedIn =0 , unscheduledVisits=0, enrolledInHiv = 0, newlyEnrolledInHiv = 0;
+        EvaluationContext evaluationContext = new EvaluationContext();
+
+        Calendar calendar = Calendar.getInstance();
+        int thisMonth = calendar.get(calendar.MONTH);
 
 
-        Thread appointmentThread = new Thread(new AppointmentsThread());
-        careAndTreatmentThread.start();
-        appointmentThread.start();
+        SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Map<String, Date> dateMap = getReportDates(thisMonth - 1);
+        Date startDate = dateMap.get("startDate");
+        Date endDate = dateMap.get("endDate");
+        Date todaysDate = todaysDate();
+        SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
+        String reportingPeriod = df.format(endDate);
 
-		careAndTreatmentThread.join();
-		appointmentThread.join();
+
+        evaluationContext.addParameterValue("startDate", startDate);
+        evaluationContext.addParameterValue("endDate", endDate);
+        evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
+
+        Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
+        allPatients = all != null? all.size(): 0;
+
+        Set<Integer> onArt = DashBoardCohorts.onART(evaluationContext).getMemberIds();
+        patientsOnArt = onArt != null? onArt.size(): 0;
+
+        Set<Integer> inCare = DashBoardCohorts.inCare(evaluationContext).getMemberIds();
+        patientsInCare = inCare != null? inCare.size(): 0;
+
+        Set<Integer> startingArt = DashBoardCohorts.newOnART(evaluationContext).getMemberIds();
+        patientsNewOnArt = startingArt != null? startingArt.size(): 0;
+
+        Set<Integer> vlResultsInLast12Months = DashBoardCohorts.viralLoadResultsIn12Months(evaluationContext).getMemberIds();
+        vlInLast12Months = vlResultsInLast12Months != null? vlResultsInLast12Months.size(): 0;
+
+        Set<Integer> viralSuppressionInLast12Months = DashBoardCohorts.viralLoadSuppressionIn12Months(evaluationContext).getMemberIds();
+        suppressedInLast12Months = viralSuppressionInLast12Months != null? viralSuppressionInLast12Months.size(): 0;
+
+        Set<Integer> patientsScheduledToday = DashBoardCohorts.patientsScheduledToday(evaluationContext).getMemberIds();
+        patientsScheduled = patientsScheduledToday != null? patientsScheduledToday.size(): 0;
+
+        Set<Integer> patientsSeenToday = DashBoardCohorts.patientsSeen(evaluationContext).getMemberIds();
+        patientsSeen = patientsSeenToday != null? patientsSeenToday.size(): 0;
+
+        Set<Integer> patientsCheckedIn = DashBoardCohorts.checkedInAppointments(evaluationContext).getMemberIds();
+        checkedIn = patientsCheckedIn != null? patientsCheckedIn.size(): 0;
+
+        Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
+        unscheduledVisits = patientsWithUnscheduledVisit != null? patientsWithUnscheduledVisit.size(): 0;
+
+        Set<Integer> cummulativeEnrolledInHiv = DashBoardCohorts.enrolledInHiv(evaluationContext).getMemberIds();
+        enrolledInHiv = cummulativeEnrolledInHiv != null? cummulativeEnrolledInHiv.size(): 0;
+
+        Set<Integer> newEnrollmentsInHiv = DashBoardCohorts.newlyEnrolledInHiv(evaluationContext).getMemberIds();
+        newlyEnrolledInHiv = newEnrollmentsInHiv != null? newEnrollmentsInHiv.size(): 0;
 
 
+        evaluationContext.addParameterValue("endDate", new Date());
 
-//
-//        Integer allPatients = 0, patientsOnArt = 0,
-//                patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
-//                suppressedInLast12Months = 0, patientsScheduled = 0, patientsSeen = 0,
-//                checkedIn = 0, unscheduledVisits = 0, enrolledInHiv = 0, newlyEnrolledInHiv = 0;
-//        EvaluationContext evaluationContext = new EvaluationContext();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        int thisMonth = calendar.get(calendar.MONTH);
-//
-//
-//        SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        Map<String, Date> dateMap = getReportDates(thisMonth - 1);
-//        Date startDate = dateMap.get("startDate");
-//        Date endDate = dateMap.get("endDate");
-//        Date todaysDate = todaysDate();
-//        SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
-//        String reportingPeriod = df.format(endDate);
-//
-//
-//        evaluationContext.addParameterValue("startDate", startDate);
-//        evaluationContext.addParameterValue("endDate", endDate);
-//        evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
-//
-//        Set<Integer> all = DashBoardCohorts.allPatients(evaluationContext).getMemberIds();
-//        allPatients = all != null ? all.size() : 0;
-//
-//        Set<Integer> onArt = DashBoardCohorts.onART(evaluationContext).getMemberIds();
-//        patientsOnArt = onArt != null ? onArt.size() : 0;
-//
-//        Set<Integer> inCare = DashBoardCohorts.inCare(evaluationContext).getMemberIds();
-//        patientsInCare = inCare != null ? inCare.size() : 0;
-//
-//        Set<Integer> startingArt = DashBoardCohorts.newOnART(evaluationContext).getMemberIds();
-//        patientsNewOnArt = startingArt != null ? startingArt.size() : 0;
-//
-//        Set<Integer> vlResultsInLast12Months = DashBoardCohorts.viralLoadResultsIn12Months(evaluationContext).getMemberIds();
-//        vlInLast12Months = vlResultsInLast12Months != null ? vlResultsInLast12Months.size() : 0;
-//
-//        Set<Integer> viralSuppressionInLast12Months = DashBoardCohorts.viralLoadSuppressionIn12Months(evaluationContext).getMemberIds();
-//        suppressedInLast12Months = viralSuppressionInLast12Months != null ? viralSuppressionInLast12Months.size() : 0;
-//
-//        Set<Integer> patientsScheduledToday = DashBoardCohorts.patientsScheduledToday(evaluationContext).getMemberIds();
-//        patientsScheduled = patientsScheduledToday != null ? patientsScheduledToday.size() : 0;
-//
-//        Set<Integer> patientsSeenToday = DashBoardCohorts.patientsSeen(evaluationContext).getMemberIds();
-//        patientsSeen = patientsSeenToday != null ? patientsSeenToday.size() : 0;
-//
-//        Set<Integer> patientsCheckedIn = DashBoardCohorts.checkedInAppointments(evaluationContext).getMemberIds();
-//        checkedIn = patientsCheckedIn != null ? patientsCheckedIn.size() : 0;
-//
-//        Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
-//        unscheduledVisits = patientsWithUnscheduledVisit != null ? patientsWithUnscheduledVisit.size() : 0;
-//
-//        Set<Integer> cummulativeEnrolledInHiv = DashBoardCohorts.enrolledInHiv(evaluationContext).getMemberIds();
-//        enrolledInHiv = cummulativeEnrolledInHiv != null ? cummulativeEnrolledInHiv.size() : 0;
-//
-//        Set<Integer> newEnrollmentsInHiv = DashBoardCohorts.newlyEnrolledInHiv(evaluationContext).getMemberIds();
-//        newlyEnrolledInHiv = newEnrollmentsInHiv != null ? newEnrollmentsInHiv.size() : 0;
-//
-//
-//        evaluationContext.addParameterValue("endDate", new Date());
-//
-//        // external link for data tool
+        // external link for data tool
         GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DATA_TOOL_URL);
         String datatoolUrl = null;
-        if (gp != null) {
+        if(gp != null) {
             datatoolUrl = gp.getPropertyValue();
         }
-//
-//        model.addAttribute("allPatients", allPatients);
-//        model.addAttribute("inCare", patientsInCare);
-//        model.addAttribute("onArt", patientsOnArt);
-//        model.addAttribute("newOnArt", patientsNewOnArt);/
-//        model.addAttribute("cumulativeEnrolledInHiv", enrolledInHiv);
-//        model.addAttribute("newlyEnrolledInHiv", newlyEnrolledInHiv);
-//        model.addAttribute("reportPeriod", reportingPeriod);
-//        model.addAttribute("vlResults", vlInLast12Months);
-//        model.addAttribute("suppressedVl", suppressedInLast12Months);
-//        model.addAttribute("patientsScheduled", patientsScheduled);
-//        model.addAttribute("patientsSeen", patientsSeen);
-//        model.addAttribute("checkedIn", checkedIn);
-//        model.addAttribute("unscheduled", unscheduledVisits);
-        model = sharedModel;
-        model.addAttribute("dataToolUrl", datatoolUrl);
 
+        model.addAttribute("allPatients", allPatients);
+        model.addAttribute("inCare", patientsInCare);
+        model.addAttribute("onArt", patientsOnArt);
+        model.addAttribute("newOnArt", patientsNewOnArt);
+        model.addAttribute("cumulativeEnrolledInHiv", enrolledInHiv);
+        model.addAttribute("newlyEnrolledInHiv", newlyEnrolledInHiv);
+        model.addAttribute("reportPeriod", reportingPeriod);
+        model.addAttribute("vlResults", vlInLast12Months);
+        model.addAttribute("suppressedVl", suppressedInLast12Months);
+        model.addAttribute("patientsScheduled", patientsScheduled);
+        model.addAttribute("patientsSeen", patientsSeen);
+        model.addAttribute("checkedIn", checkedIn);
+        model.addAttribute("unscheduled", unscheduledVisits);
+
+        model.addAttribute("dataToolUrl", datatoolUrl);
 
 
         return null;
     }
 
-    private Map<String, Date> getReportDates(int month) {
+    private Map<String, Date> getReportDates(int month){
         Map<String, Date> reportDates = new HashMap<String, Date>();
         Calendar gc = new GregorianCalendar();
         gc.set(Calendar.MONTH, month);
@@ -162,7 +143,7 @@ public class MiniFacilityDashboardFragmentController {
         return reportDates;
     }
 
-    private Date todaysDate() {
+    private Date todaysDate(){
         Calendar gc = new GregorianCalendar();
         gc.clear(Calendar.HOUR);
         gc.clear(Calendar.HOUR_OF_DAY);
@@ -172,132 +153,6 @@ public class MiniFacilityDashboardFragmentController {
         Date today = gc.getTime();
 
         return today;
-    }
-
-    public class CareAndTreatmentThread implements Runnable {
-        Integer allPatients = 0, patientsOnArt = 0,
-                patientsInCare = 0, patientsNewOnArt = 0, vlInLast12Months = 0,
-                suppressedInLast12Months = 0,
-                enrolledInHiv = 0, newlyEnrolledInHiv = 0;
-
-        public CareAndTreatmentThread() {
-
-        }
-
-        @Override
-        public void run() {
-            Context.openSession();
-            EvaluationContext evaluationContext = new EvaluationContext();
-            Calendar calendar = Calendar.getInstance();
-            int thisMonth = calendar.get(calendar.MONTH);
-            SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Map<String, Date> dateMap = getReportDates(thisMonth - 1);
-            Date startDate = dateMap.get("startDate");
-            Date endDate = dateMap.get("endDate");
-            Date todaysDate = todaysDate();
-            SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
-            String reportingPeriod = df.format(endDate);
-
-
-            evaluationContext.addParameterValue("startDate", startDate);
-            evaluationContext.addParameterValue("endDate", endDate);
-            evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
-            System.out.println("EVALUATION CONTEXT ==== "+evaluationContext);
-            Set<Integer> all = null;
-            CohortDefinitionService cohortDefinitionService =  Context.getService(CohortDefinitionService.class);
-            System.out.println("COHORT DEF==="+cohortDefinitionService);
-           // log.info("COHORT DEF==="+cohortDefinitionService);
-//            try {
-//                all = evaluate(new AllPatientsCohortDefinition(), evaluationContext).getMemberIds();
-//              log.info("ALL PATIENT==="+all);
-//            } catch (EvaluationException e) {
-//                e.printStackTrace();
-//            }
-            allPatients = all != null ? all.size() : 0;
-
-            Set<Integer> onArt = DashBoardCohorts.onART(evaluationContext).getMemberIds();
-            patientsOnArt = onArt != null ? onArt.size() : 0;
-
-            Set<Integer> inCare = DashBoardCohorts.inCare(evaluationContext).getMemberIds();
-            patientsInCare = inCare != null ? inCare.size() : 0;
-
-            Set<Integer> startingArt = DashBoardCohorts.newOnART(evaluationContext).getMemberIds();
-            patientsNewOnArt = startingArt != null ? startingArt.size() : 0;
-
-            Set<Integer> vlResultsInLast12Months = DashBoardCohorts.viralLoadResultsIn12Months(evaluationContext).getMemberIds();
-            vlInLast12Months = vlResultsInLast12Months != null ? vlResultsInLast12Months.size() : 0;
-
-            Set<Integer> viralSuppressionInLast12Months = DashBoardCohorts.viralLoadSuppressionIn12Months(evaluationContext).getMemberIds();
-            suppressedInLast12Months = viralSuppressionInLast12Months != null ? viralSuppressionInLast12Months.size() : 0;
-
-            Set<Integer> cummulativeEnrolledInHiv = DashBoardCohorts.enrolledInHiv(evaluationContext).getMemberIds();
-            enrolledInHiv = cummulativeEnrolledInHiv != null ? cummulativeEnrolledInHiv.size() : 0;
-
-            Set<Integer> newEnrollmentsInHiv = DashBoardCohorts.newlyEnrolledInHiv(evaluationContext).getMemberIds();
-            newlyEnrolledInHiv = newEnrollmentsInHiv != null ? newEnrollmentsInHiv.size() : 0;
-
-            evaluationContext.addParameterValue("endDate", new Date());
-            sharedModel.addAttribute("allPatients", allPatients);
-            sharedModel.addAttribute("inCare", patientsInCare);
-            sharedModel.addAttribute("onArt", patientsOnArt);
-            sharedModel.addAttribute("newOnArt", patientsNewOnArt);
-            sharedModel.addAttribute("cumulativeEnrolledInHiv", enrolledInHiv);
-            sharedModel.addAttribute("newlyEnrolledInHiv", newlyEnrolledInHiv);
-            sharedModel.addAttribute("reportPeriod", reportingPeriod);
-            sharedModel.addAttribute("vlResults", vlInLast12Months);
-            sharedModel.addAttribute("suppressedVl", suppressedInLast12Months);
-
-        }
-    }
-
-    public class AppointmentsThread implements Runnable {
-        Integer patientsScheduled = 0, patientsSeen = 0,
-                checkedIn = 0, unscheduledVisits = 0;
-
-        public AppointmentsThread() {
-
-        }
-
-        @Override
-        public void run() {
-            Context.openSession();
-            EvaluationContext evaluationContext = new EvaluationContext();
-
-            Calendar calendar = Calendar.getInstance();
-            int thisMonth = calendar.get(calendar.MONTH);
-
-
-            SimpleDateFormat todayFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Map<String, Date> dateMap = getReportDates(thisMonth - 1);
-            Date startDate = dateMap.get("startDate");
-            Date endDate = dateMap.get("endDate");
-            Date todaysDate = todaysDate();
-            SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
-            String reportingPeriod = df.format(endDate);
-
-
-            evaluationContext.addParameterValue("startDate", startDate);
-            evaluationContext.addParameterValue("endDate", endDate);
-            evaluationContext.addParameterValue("enrolledOnOrBefore", endDate);
-
-
-            Set<Integer> patientsScheduledToday = DashBoardCohorts.patientsScheduledToday(evaluationContext).getMemberIds();
-            patientsScheduled = patientsScheduledToday != null ? patientsScheduledToday.size() : 0;
-
-            Set<Integer> patientsSeenToday = DashBoardCohorts.patientsSeen(evaluationContext).getMemberIds();
-            patientsSeen = patientsSeenToday != null ? patientsSeenToday.size() : 0;
-
-            Set<Integer> patientsCheckedIn = DashBoardCohorts.checkedInAppointments(evaluationContext).getMemberIds();
-            checkedIn = patientsCheckedIn != null ? patientsCheckedIn.size() : 0;
-
-            Set<Integer> patientsWithUnscheduledVisit = DashBoardCohorts.unscheduledAppointments(evaluationContext).getMemberIds();
-            unscheduledVisits = patientsWithUnscheduledVisit != null ? patientsWithUnscheduledVisit.size() : 0;
-            evaluationContext.addParameterValue("endDate", new Date());
-            sharedModel.addAttribute("patientsScheduled", patientsScheduled);
-            sharedModel.addAttribute("patientsSeen", patientsSeen);
-            sharedModel.addAttribute("ch6eckedIn", checkedIn);
-            sharedModel.addAttribute("unscheduled", unscheduledVisits);
-        }
     }
 
 }

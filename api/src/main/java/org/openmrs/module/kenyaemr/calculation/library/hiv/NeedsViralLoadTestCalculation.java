@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- *
+ * <p>
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -44,6 +44,7 @@ import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSi
 
 public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+
     /**
      * Needs vl test calculation criteria
      * ----------------------------------
@@ -62,7 +63,6 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         PatientService patientService = Context.getPatientService();
-
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         //Cohorts to consider
@@ -87,7 +87,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
         Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
         CalculationResultMap ret = new CalculationResultMap();
-        for(Integer ptId:cohort) {
+        for (Integer ptId : cohort) {
             Patient patient = patientService.getPatient(ptId);
             boolean needsViralLoadTest = false;
             String lastVlResult = null;
@@ -100,24 +100,24 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
             //Check for latest vl and if it exists (vl is only valid if its for the last 12 months)
             CalculationResult lastvlresult = lastVlResults.get(ptId);
             if (lastvlresult != null && lastvlresult.getValue() != null) {
-                Object lastVl =  lastvlresult.getValue();
+                Object lastVl = lastvlresult.getValue();
                 SimpleObject res = (SimpleObject) lastVl;
                 lastVlResult = res.get("lastVl").toString();
                 lastVLResultDate = (Date) res.get("lastVlDate");
                 // Differentiate between LDL and values for Viral load results
-                if(lastVlResult =="LDL"){
+                if (lastVlResult == "LDL") {
                     lastVlResultLDL = "LDL";
-                }else{
-                    lastVlResultValue =  Double.parseDouble(lastVlResult);
+                } else {
+                    lastVlResultValue = Double.parseDouble(lastVlResult);
                 }
             }
             // Confirm that patient is on hiv and there are no pending vls
-            if(inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && allOnArt.contains(ptId) && !ltfu.contains(ptId)) {
+            if (inHivProgram.contains(ptId) && !pendingVlResults.contains(ptId) && allOnArt.contains(ptId) && !ltfu.contains(ptId)) {
                 // Classification for pregnant and breastfeeding
                 if (pregnant.contains(ptId) || breastFeeding.contains(ptId)) {
                     // Needs vl immediately : Already on ART (more than 3 months on ART)
                     if (daysSince(artStartDate, context) >= 92) {
-                        if (lastVLResultDate == null ) {
+                        if (lastVLResultDate == null) {
                             needsViralLoadTest = true;
                         }
                         if (lastVLResultDate != null && ((lastPregStartDate != null && lastPregStartDate.after(lastVLResultDate)) || (lastBFStartDate != null && lastBFStartDate.after(lastVLResultDate)))) {
@@ -138,11 +138,11 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                 // Classification for General population and kids <24 years
                 if (!pregnant.contains(ptId) || !breastFeeding.contains(ptId)) {
                     // Needs vl after 6 months :  Without initial vl
-                    if (lastVLResultDate == null && daysSince(artStartDate, context) >= 183){
+                    if (lastVLResultDate == null && daysSince(artStartDate, context) >= 183) {
                         needsViralLoadTest = true;
                     }
                     // Needs vl after 6 months :  Children (< 24 years) for followup
-                    if (lastVLResultDate != null  && patient.getAge() < 24 && daysSince(lastVLResultDate, context) >= 183) {
+                    if (lastVLResultDate != null && patient.getAge() < 24 && daysSince(lastVLResultDate, context) >= 183) {
                         needsViralLoadTest = true;
                     }
                     // Needs vl after 12 months : Suppressed
@@ -150,7 +150,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
                         needsViralLoadTest = true;
                     }
                     // Needs vl after 3 months : All Unsuppressed
-                    if (lastVLResultDate !=null && lastVlResultValue != null && lastVlResultValue >= 1000 && daysSince(lastVLResultDate, context) >= 92) {
+                    if (lastVLResultDate != null && lastVlResultValue != null && lastVlResultValue >= 1000 && daysSince(lastVLResultDate, context) >= 92) {
                         needsViralLoadTest = true;
                     }
                     ret.put(ptId, new BooleanResult(needsViralLoadTest, this));
@@ -158,7 +158,7 @@ public class NeedsViralLoadTestCalculation extends AbstractPatientCalculation im
 
             }
         }
-        return  ret;
+        return ret;
     }
 
 }
