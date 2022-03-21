@@ -38,6 +38,7 @@
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
 				<ref bean="kenyaemr.common.form.hivSelfTesting"/>
+				<ref bean="kenyaemr.common.form.nutrition"/>
 
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
@@ -334,7 +335,23 @@
 		<property name="htmlform" value="kenyaemr:hts/htsLinkage.html" />
 		<property name="order" value="201002" />
 	</bean>
-
+	<!-- Nutrition linkage form -->
+	<bean id="kenyaemr.common.form.nutrition" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="78cdd7c5-cfbd-4e63-b16c-c966e7708c56" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.defaultertracing" />
+				<ref bean="kenyaemr.app.prep" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:nutrition/nutrition.html" />
+		<property name="order" value="201002" />
+	</bean>
 	<!-- HTS Client tracing form -->
 	<bean id="kenyaemr.common.form.htsClientTracing" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="15ed03d2-c972-11e9-a32f-2a2ae2dbcce4" />

@@ -1,0 +1,371 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script type="text/javascript">
+           //Morisky assessment
+           var stiScreened = getValue('screened-sti.value');
+           var adherenceAssessment  = function () {
+            var val = jq(this).val();
+            const YES_CONCEPT_ID = 1065;
+            const NO_CONCEPT_ID = 1066;
+            const UNKNOWN_CONCEPT_ID = 1067;
+            var assessmentRadios = jq('#adherence-1').find('input[type=radio]');
+            var assessmentYesResponses = [];
+            var assessmentNoResponses = [];
+            //Fetch responses for the assessment questions
+            jq.each(assessmentRadios, function(){
+                //Push any responses to the respective assessmentYesResponses and assessmentNoResponses array
+                if (this.value == YES_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentYesResponses.push(this);
+                }
+                if (this.value == NO_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+                if (this.value == UNKNOWN_CONCEPT_ID &amp;&amp; this.checked == true) {
+                    assessmentNoResponses.push(this);
+                }
+            });
+            if (stiScreened == false &amp;&amp; personPresent == SELF ) {
+                getField('screened-sti.error').html('Please specify whether patient was screened for STI.').show();
+                return false;
+            }else{
+                getField('screened-sti.error').html('Please specify whether patient was screened for STI.').hide();
+            }
+            //If no responses have been recorded then prompt since this assessment is mandatory
+            if (assessmentYesResponses.length == 0 &amp;&amp; assessmentNoResponses.length == 0 ) {
+                //Prompt to complete assessment
+            }else{
+                if(assessmentYesResponses.length &gt; 0) {
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 0) {
+                    jq("#arv-adherence input[value=1115]").prop("checked", true);
+                    jq('#adherence-2').hide();
+                }
+                if(assessmentYesResponses.length == 1 || assessmentYesResponses.length == 2 ) {
+                    jq("#arv-adherence input[value=163302]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 3 || assessmentYesResponses.length == 4 ) {
+                    jq("#arv-adherence input[value=163303]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 4 || assessmentYesResponses.length == 5 ) {
+                    jq("#arv-adherence input[value=114413]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                if(assessmentYesResponses.length == 5 || assessmentYesResponses.length == 6 ) {
+                    jq("#arv-adherence input[value=157651]").prop("checked", true);
+                    jq('#adherence-2').show();
+                }
+                
+            }
+        }
+        
+
+
+        function displayRecentBmi() {
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+            var bmi = '';
+            var recent_bmi ='';
+            var assessmentYesResponses = [];
+            if (pAge &gt; 19 &amp;&amp; heightM !="") {
+                getField('height.value').val(heightM*100);
+            }else{
+                getField('height.value').val("");
+            }
+            if (pAge &gt; 14) {
+                if (weightKg >0 &amp;&amp; heightM >0) {
+                    bmi = weightKg / (heightM * heightM);
+                    recent_bmi = bmi.toFixed(2);
+                    jq('#recent-calculated-bmi').html(recent_bmi);
+                    jq('#bmi-value:text').val(recent_bmi);
+                    if (recent_bmi &lt; 16 &amp;&amp; recent_bmi &gt; 1) {
+                        jq("#nutritional-status input[value=163302]").prop("checked", true);
+                    } else if (recent_bmi &gt; 16 &amp;&amp; recent_bmi &lt; 18.5) {
+                        jq("#nutritional-status input[value=163303]").prop("checked", true);
+                    } else if (recent_bmi &gt; 18.5 &amp;&amp; recent_bmi &lt; 25) {
+                        jq("#nutritional-status input[value=1115]").prop("checked", true);
+                    } else if (recent_bmi &gt; 25) {
+                        jq("#nutritional-status input[value=114413]").prop("checked", true);
+                    }
+                }
+            }
+        }
+        function onPersonPresentChange(){
+            var nutStatus = jq("#nutritional-status");
+        }
+
+        function patientLMPStatus(){
+            var ifPatientPregnant =  jq('#if-patient-pregnant');
+            if(val == 1065){
+                jq('#if-patient-pregnant').show();
+                clearHiddenSections([ifPatientPregnant]);
+            }
+            if(val == 1066){
+                jq('#if-patient-pregnant').hide();
+                clearHiddenSections([ifPatientPregnant]);
+            }
+            if(val == 1528){
+                jq('#if-patient-pregnant').hide();
+                clearHiddenSections([ifPatientPregnant]);
+            }
+        }
+        function onEntryPointChange(){
+            var artStatus = jq('#art-status');
+        }
+        function onArtStatusChange() {
+            if (getValue('art-status.value') == 'false') {
+                jq('#art-history :input').prop('disabled', true);
+
+        }
+        jQuery(function () {
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            onWeightOrHeightChange();
+            displayRecentBmi();
+            var hasBeenOnARVs = "<lookup expression="fn.latestObs(160533).getValueCoded()"/>";
+            var adherenceResponses1=jq('#adherence-1');
+            var adherenceResponses2=jq('#adherence-2');
+            jq('#adherence-2').hide();
+            clearHiddenSections([adherenceResponses1, adherenceResponses2]);
+            jq("#adherence-1").change(adherenceAssessment);
+            jq('#if-patient-pregnant').hide();
+            jq("#screened-sti :input[type=radio]").change(screenedStiSelected);
+            jq('#chronic-illness :input[type=radio]').change(chronicIllnessesSelected);
+            jq("#test-status :input[type=radio]").change(onTestStatusSelected);
+            jq('#art-status input').change(onArtStatusChange);
+            //limit letters only in text field
+            jQuery('#rsn').keypress(function(event) {
+                var code = (event.keyCode ? event.keyCode : event.which);
+                //alert(code)
+                if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                    event.preventDefault();
+            });
+            var chronicIllnessesSelected = function() {
+			var val = getValue('chronic-illness.value');
+			var illness = jq('.illness-chronic select').val('');
+            }
+
+
+            if (data.covidTested === true) {
+                   jq('#further-tests').show();
+                   jq('#first-test').hide();
+               }else{
+                   jq('#first-test').show();
+                   jq('#further-tests').hide();
+               }
+
+
+               var onTestStatusSelected = function () {
+            getField('test-status.error').html('Patient test status should not be empty').hide();
+            var val = jq(this).val();
+            if (val == 1065){
+                jq('#tbl-test-results').show();
+            }
+
+            if(hasBeenOnARVs == 1)
+            {
+                jq("#art-status input[value='true']").prop("checked", true);
+            }
+            if(hasBeenOnARVs == 2)
+            {
+                jq("#art-status input[value='true']").prop("checked", false);
+            }
+
+
+            if (val == 1066){
+
+                jq('#tbl-test-results').hide();
+                jq('#tbl-positive-results').hide();
+                       // clearing hidden sections
+                var testResult=jq('#test-result');
+                var presentationStatus=jq('#presentation-status');
+                var admissionStatus=jq('#admission-status');
+                var oxygenSupplement=jq('#oxygen');
+                var admissionUnit=jq('#admission-unit');
+                getField('date-tested.value').val("");
+                clearHiddenSections([testResult,presentationStatus,admissionStatus,oxygenSupplement,admissionUnit]);
+            }
+        }
+
+
+
+            var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+            var pgender = "<lookup expression="patient.gender" />";
+            var complicationType = getValue("post_tx_complication.value");
+                if (complicationType == 5622) {
+                    jq("#tbl-other-tx-complication").show();
+                } else {
+                    jq("#tbl-other-tx-complication").hide();
+                }
+        
+            beforeSubmit.push(function () {
+                var patientTestStatus = getValue('test-status.value');
+                var lmpdate = new Date(getValue('lmp-date.value')).getTime();
+                    if (lmpdate &lt; pbirthdate) {
+                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
+                        return false;
+                    }
+
+                    if (patientTestStatus == "") {
+                getField('test-status.error').html('Patient test status should not be empty').show();
+                return false;
+            }
+            if (patientTestStatus == 1065 &amp;&amp; patientResultStatus == "" ) {
+                getField('test-result.error').html('Patient result status should not be empty').show();
+                return false;
+            }
+                    return true;
+                });
+            
+        });
+
+    </script>
+
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+
+        <fieldset id="patient-details">
+            <legend>
+                <strong> Nutrition Status </strong>
+            </legend>
+
+
+            <table class="simple-table">
+                <tr>
+                    <td>Nutrition Status select</td>
+                    <td>
+                    <td><span class="value"><recentObs conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                    <td rowspan="4">
+                        <obs
+                                answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163303AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,157651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="If the patient has normal nutritional status,If patient has severe acute malnutrition,If patient has moderate/mild acute malnutrition,If the patient is overweight/Obese,If patient has severe acute malnutrition with complication"
+                                conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                id="arv-adherence" style="radio"/>
+                    </td>
+
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="patient-details">
+            <legend>
+                <strong> Serostatus </strong>
+            </legend>
+            <table class="simple-table">
+                <tr>
+                    <td>Serostatus <span style="color:red;">*</span></td>
+                    <td>
+                        <obs answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Positive,Negative,UnKnown"
+                             conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             id="screened-sti"
+                             style="radio"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+
+        
+
+        <fieldset id="patient-details">
+            <legend>
+                <strong> Coexisting medical conditions </strong>
+            </legend>
+            <table class="simple-table">
+                <tr>
+                    <td>Coexisting medical conditions <span style="color:red;">*</span></td>
+                    <td>
+                        <obs
+                                answerConceptIds="163323AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,117399AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="TB,Diabetes,Hypertension,Other"
+                                class="illness-chronic"
+                                conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                id="chronic" style="dropdown"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset id="patient-details">
+            <legend>
+                <strong> Patient has been on ARVs </strong>
+            </legend>
+            <table class="simple-table">
+                <td>Patient has been on ARVs</td>
+                <td>
+                    <obs conceptId="160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="art-status" style="yes_no"/>
+                </td>
+            </table>
+        </fieldset>
+        
+        <fieldset id="if-patient-pregnant">
+            <legend>
+                <strong> Patient Category </strong>
+            </legend>
+            <table id="simple-table">
+                <tr>
+                    <td>
+                        <strong>Patient Pregnant? <span style="color:red;">*</span></strong>
+                        <obs answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1528AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels=" if patient is pregnant/postpartum,If the patient is adult (non-pregnant/postpartum),child"
+                             conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             id="pregnancyOption"
+                             labelText="&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;"
+                             style="radio"/>
+                    </td>
+                    <td>
+                        <span class="value"><recentObs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <div class="ke-form-content">
+            <fieldset>
+                <legend>Remarks</legend>
+                <table class="simple-table">
+                    <tr>
+                        <td>Remarks:</td>
+                        <td>
+                            <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" style="textarea"/>
+                        </td>
+
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>
