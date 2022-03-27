@@ -150,6 +150,35 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
+	 * Gets patient's Weight
+	 * @return
+	 */
+	public String getPatientWeight() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.PATIENT_WEIGHT);
+	}
+	/**
+	 * Sets patient weight
+	 */
+	public void setPatientWeight(String patientWeight) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.PATIENT_WEIGHT, patientWeight);
+	}
+
+	/**
+	 * Gets patient's Height
+	 * @return
+	 */
+
+	public String getPatientHeight() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.PATIENT_HEIGHT);
+	}
+	/**
+	 * Sets patient's alternative phone contact
+	 */
+	public void setPatientHeight(String patientHeight) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.PATIENT_HEIGHT, patientHeight);
+	}
+
+	/**
 	 * Gets the name of next of kin
 	 * @return the name
 	 */
@@ -163,6 +192,22 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	 */
 	public void setNextOfKinName(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.NEXT_OF_KIN_NAME, value);
+	}
+
+	/**
+	 * Gets the name of next of kin
+	 * @return the name
+	 */
+	public String getBmi() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.BMI);
+	}
+
+	/**
+	 * Sets the name of next of kin
+	 * @param value the name
+	 */
+	public void setBmi(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.BMI, value);
 	}
 
 	/**

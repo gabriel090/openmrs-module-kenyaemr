@@ -100,6 +100,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String KDOD_CADRE = "96a99acd-2f11-45bb-89f7-648dbcac5ddf";
 		public static final String KDOD_RANK = "9f1f8254-20ea-4be4-a14d-19201fe217bf";
 		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
+		public static final String PATIENT_WEIGHT = "d00d4cf0-e68f-4950-a63b-b0254b5e7f1a";
+		public static final String PATIENT_HEIGHT = "0f4f175d-762f-4aa0-baa8-c2ed0f534163";
+		public static final String BMI = "13ea252c-8a44-4748-beee-95fb7170bbd1";
+
 	}
 
 	public static final class _Provider {
@@ -219,6 +223,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_FIRST_NAME));
 		install(personAttributeType("Guardian Last Name", "Guardian's last name",
 				String.class, null, false, 4.3, _PersonAttributeType.GUARDIAN_LAST_NAME));
+		install(personAttributeType("BMI", "BMI scale",
+				String.class, null, false, 4.4, _PersonAttributeType.BMI));
 		//KDoD properties
 		install(personAttributeType("KDoD cadre", "Cadre in KDoD",
 				String.class, null, false, 4.5, _PersonAttributeType.KDOD_CADRE));
@@ -227,6 +233,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("KDoD unit", "KDoD passout unit",
 				String.class, null, false, 4.5, _PersonAttributeType.KDOD_UNIT));
 
+		install(personAttributeType("Weight", "Patient's weight",
+				String.class, null, false, 4.6, _PersonAttributeType.PATIENT_WEIGHT));
+		install(personAttributeType("Height", "Patient's Height",
+				String.class, null, false, 4.6, _PersonAttributeType.PATIENT_HEIGHT));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
