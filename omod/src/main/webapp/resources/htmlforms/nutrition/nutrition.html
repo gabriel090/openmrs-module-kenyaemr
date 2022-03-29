@@ -1,0 +1,429 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script type="text/javascript">
+        function onWeightOrHeightChange() {
+            var display = '';
+            var weightKg = parseFloat(getValue('weight.value'));
+            var heightM = parseFloat(getValue('height.value')) / 100;
+          
+        }
+       
+
+        jQuery(function () {
+            getField('weight.value').change(onWeightOrHeightChange);
+            getField('height.value').change(onWeightOrHeightChange);
+            onWeightOrHeightChange();
+           
+
+            //limit letters only in text field
+            jQuery('#rsn').keypress(function(event) {
+                var code = (event.keyCode ? event.keyCode : event.which);
+                //alert(code)
+                if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                    event.preventDefault();
+            });
+           
+
+
+
+          
+        });
+    </script>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+
+    <tr>
+    <td colspan="2">Patient Details<br/>
+    <table>
+       <tr>
+           <th>
+               
+        <fieldset id="serostatus-outcome">
+                <legend>
+                    <strong> Serostatus </strong>
+                </legend>
+                <table class="simple-table">
+                    <tr>
+                       
+                        <td>
+                            <obs
+                                    conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    answerLabels="Positive,Negative,Unknown"
+                                    style="radio" id="patient-serostatus"
+                            />
+                        </td>
+                        
+                    </tr>
+                </table>
+        </fieldset>
+           </th>
+           <th>
+               
+        <fieldset id="edema-outcome">
+                <legend>
+                    <strong>Does the Patient have Edema? </strong>
+                </legend>
+                <table class="simple-table">
+                    <tr>
+                        <td>
+                            <obs
+                                conceptId="460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Yes,No ,Unknown  "
+                                style="radio" id="patient-edema"
+                            />
+                        </td>
+                        
+                    </tr>
+                </table>
+        </fieldset>
+           </th>
+           <th>
+               
+        <fieldset id="arv-outcome">
+            <legend>
+                <strong>Is the patient on ARV's? </strong>
+                </legend>
+                <table class="simple-table">
+                    <tr>
+                        <td>rating</td>
+                        <td>
+                            <obs
+                                conceptId="160119AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                answerLabels="Yes,No ,Unknown  "
+                                style="radio" id="patient-arv"
+                            />
+                        </td>
+                        
+                    </tr>
+                </table>
+        </fieldset>
+           </th>
+           <th>
+
+           <fieldset>
+            <legend>Pregnancy Details</legend>
+            <table class="right-aligned-first" style="width: 100%;" border="0">
+                <tr>
+                    <td colspan="2" style="text-align: left"><obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        style="radio" answerLabels="Yes,NO,Not Applicable" id="pregnancyOption"/></td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+       
+           </th>
+           <th>
+
+           <fieldset>
+            <legend>Maternal Nutrition</legend>
+            <table class="right-aligned-first" style="width: 100%;" border="0">
+                <tr>
+                    <td colspan="2" style="text-align: left"><obs conceptId="5272AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerConceptIds="165475AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,113926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                        style="radio" answerLabels="Prenatal,Postnatal" id="pregnancyOption"/></td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+
+       
+           </th>
+       </tr>
+    </table>
+    </td>                          
+    </tr>
+                           
+     
+
+
+
+        <fieldset>
+            <legend>Recordings</legend>
+
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Current</th>
+                    <th>Recent</th>
+                </tr>
+                <tr>
+                    <td>Weight</td>
+                    <td>
+                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                        kg
+                    </td>
+                    <td>
+                        <recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Height</td>
+                    <td>
+                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                        cm
+                    </td>
+                    <td>
+                        <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                </tr>
+        
+                <tr>
+                    <td>MUAC</td>
+                    <td>
+                        <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                    <td>
+                        <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                    </td>
+                </tr>
+               
+            </table>
+        </fieldset>
+              <!-- Known allergies   -->
+        <fieldset class="patient-details">
+            <legend>Known Allergies</legend>
+                <div>
+                    Patient has any known allergie(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="known-allergies" conceptId="160557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  style="yes_no"/>
+                        <span style="color:red;"><strong>*</strong></span>
+                </div>
+            <table id="tbl-known-allergies">
+                <tr>
+                    <td colspan="2">Record any known allergies<br/>
+                    <table>
+                        <tr>
+                        <th>Causative agent</th>
+                            <th>Reaction</th>
+                            <th>Severity</th>                  
+                        </tr>
+                            <repeat>
+                                <template>
+                                <obsgroup groupingConceptId="121689AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                    <tr>
+                                        <td><obs class="allergen" conceptId="160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerConceptIds="162543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72609AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162544AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162545AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162171AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162546AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162172AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                            162176AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162536AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162539AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                              	162541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Beef,Caffeine,Chocolate,Dairy Food,Eggs,Fish,Milk Protein,Peanuts,Shellfish,Soy,Strawberries,Wheat,Adhesive Tape,Bee Stings,Dust,Latex,Mold,Pollen,Ragweed,Other"
+                                            style="dropdown" id="allergy-field"/>
+                                        </td>
+                                        <td><obs class="reaction" conceptId="159935AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerConceptIds="121629AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Anaemia,Unknown,Other"
+                                            style="dropdown"
+                                                    /></td>
+                                                    <td><obs class="severity" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerConceptIds="160754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160755AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160756AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160758AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mild,Moderate,Severe,Fatal,Unknown" /></td>
+                                                  
+                                                </tr>
+                                            </obsgroup>
+                                        </template>
+                                        <render n="1" concept=" " />
+                                       
+                                    </repeat>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                
+                <fieldset id="medical-history">
+            <legend>Coexisting Medical Condition </legend>
+            <table class ="simple-table">
+                <tr>
+                    <td>
+
+                            <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                            <tr id="disorder">
+                                <td>  Client's known history of: <br/></td>
+                                <td>
+                                    <obs conceptId="1628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Bleeding Disorder" style="checkbox" /><br/>
+                                    <obs conceptId="1628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="119481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Diabetes " style="checkbox" /><br/>
+                                </td>
+                            </tr>
+                            </obsgroup>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                            <obsgroup groupingConceptId="159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr id="complaints-checked">
+                                    <td>  Client presenting with complaint:  <span style="color:red;"><strong>*</strong></span><br/><br/>
+                                        <obs id="complaints-today" conceptId="1154AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"/>
+
+                                          </td>
+                                    <td>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123529AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Urethral Discharge" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="118990AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Genital Sore" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163606AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Pain on Urination" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="125203AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Swelling of the scrotum" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163831AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Difficulty in retracting foreskin" style="checkbox" /><br/>
+                                    </td>
+                                    <td>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130845AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Difficulty in returning foreskin to normal" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Concerns about erection/sexual function" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163813AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Epispadia" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="138010AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Hypospadia" style="checkbox" /><br/>
+                                        <obs conceptId="1728AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabel="Others" style="checkbox" id="complaint-error" />  <br/>
+
+                                    </td>
+                                            <td>
+                                                <br/>
+                                                <table id="tbl-other-complaint">
+                                                    <tr>
+                                                        <td>  &#160;&#160;&#160; Specify :
+                                                            <obs id="other-complaint" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                                            &#160;&#160;&#160;
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                </tr>
+                            </obsgroup>
+                    </td>
+
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset class="tca-part">
+                    <legend>Nutrition</legend>
+                    <table>
+                        <th>
+                             
+        <fieldset class="tca-part">
+                 
+                    <table>
+                        <tr id="tbl-fast-track">
+                            <td>Nutrition status</td> 
+                            <td>
+                                <obs conceptId="164947" id="fast-track"
+                                     answerConceptIds="164942,114413,164945,1115"
+                                     style="dropdown"
+                                     answerLabels="SAM,MAM,Overweight/Obese,Normal"
+                                />
+                                <span style="color:red;"><strong>*</strong></span>
+                            </td>
+                        </tr>
+                    </table>
+        </fieldset>
+
+            </th>
+            <th>
+            <fieldset class="tca-part">
+                    
+                    <table>
+                        <tr id="tbl-fast-track">
+                            <td>Therapeutic foods</td> 
+                            <td>
+                                <obs conceptId="164947" id="fast-track"
+                                     answerConceptIds="164942,114413,164945,1115,164945,164945"
+                                     style="dropdown"
+                                     answerLabels="RUTF,F75,F100,Resomol,None,Others"
+                                />
+                                <span style="color:red;"><strong>*</strong></span>
+                            </td>
+                        </tr>
+                    </table>
+        </fieldset>
+            </th>
+            <th>
+            <fieldset class="tca-part">
+                    <table>
+                        <tr id="tbl-fast-track">
+                            <td>Supplemental foods</td> 
+                            <td>
+                                <obs conceptId="164947" id="fast-track"
+                                     answerConceptIds="164942,114413,164945,1115,164942,164942"
+                                     style="dropdown"
+                                     answerLabels="FBF,CSB,RUSF,Liquid nutrition Supplement,None,Others"
+                                />
+                                <span style="color:red;"><strong>*</strong></span>
+                            </td>
+                        </tr>
+                    </table>
+        </fieldset>
+            </th>
+            <th>
+            <fieldset class="tca-part">
+                   
+                    <table>
+                        <tr id="tbl-fast-track">
+                            <td>Micronutrints foods</td> 
+                            <td>
+                                <obs conceptId="164947" id="fast-track"
+                                     answerConceptIds="164942,114413,164945,1115,164942,164942,164945,1115,164942,164942"
+                                     style="dropdown"
+                                     answerLabels="Vitamin A,B6,Folic,Multi Vitamin,Iron,Iron-Folate,Zinc,Multiple micronutrients,None,Other(Specific)"
+                                />
+                                <span style="color:red;"><strong>*</strong></span>
+                            </td>
+                        </tr>
+                    </table>
+        </fieldset>
+
+            </th>
+                    </table>
+        </fieldset>   
+    
+       
+       
+     
+        <fieldset>
+            <legend>Remarks </legend>
+            <table id="tbl-remarks">
+                <tr>
+                    <td> Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="remarks" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>

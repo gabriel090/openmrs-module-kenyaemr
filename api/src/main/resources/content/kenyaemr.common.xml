@@ -38,6 +38,8 @@
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
 				<ref bean="kenyaemr.common.form.hivSelfTesting"/>
+				<ref bean="kenyaemr.common.form.nutrition"/>
+
 
 				<!--<ref bean="kenyaemr_knh_testing.common.form.inpatientCareForm"/>-->
 			</set>
@@ -434,6 +436,23 @@
 		<property name="order" value="201095" />
 	</bean>
 
+	<!-- Nutrition linkage form -->
+	<bean id="kenyaemr.common.form.nutrition" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="40218fa2-7632-438f-b5d9-c062e938e00e" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.defaultertracing" />
+				<ref bean="kenyaemr.app.prep" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:nutrition/nutrition.html" />
+		<property name="order" value="201002" />
+	</bean>
 	<!-- ===================== Reports ===================== -->
 
 	<bean id="kenyaemr.common.report.etlMissedAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
