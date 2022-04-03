@@ -37,6 +37,12 @@
                     [object: command, property: "nextOfKinAddress", label: "Postal Address"]
             ]
     ]
+    def heightWeightRows = [
+            [
+                    [object: command, property: "patientHeight", label: "Height"],
+                    [object: command, property: "patientWeight", label: "Weight"]
+            ]
+    ]
 
     def contactsFields = [
             [
@@ -304,6 +310,9 @@
                 </tr>
             </table>
             <% nextOfKinFieldRows.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+            <% heightWeightRows.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 

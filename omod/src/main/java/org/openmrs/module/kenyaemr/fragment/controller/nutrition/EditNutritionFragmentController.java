@@ -541,6 +541,7 @@ public class EditNutritionFragmentController {
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
+
 			wrapper.setSubChiefName(subChiefName);
 			wrapper.setAlternativePhoneContact(alternatePhoneContact);
 			wrapper.setNearestHealthFacility(nearestHealthFacility);
@@ -953,7 +954,6 @@ public class EditNutritionFragmentController {
 		public void setNextOfKinAddress(String nextOfKinAddress) {
 			this.nextOfKinAddress = nextOfKinAddress;
 		}
-
 		/**
 		 * @return the subChiefName
 		 */

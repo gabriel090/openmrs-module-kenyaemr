@@ -101,7 +101,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String KDOD_RANK = "9f1f8254-20ea-4be4-a14d-19201fe217bf";
 		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
 		public static final String PATIENT_WEIGHT = "d00d4cf0-e68f-4950-a63b-b0254b5e7f1a";
-		public static final String PATIENT_HEIGHT = "0f4f175d-762f-4aa0-baa8-c2ed0f534163";
+		public static final String PATIENT_HEIGHT = "9ac43932-3063-42d5-a1fe-e48d084773e2";
+
 		public static final String BMI = "13ea252c-8a44-4748-beee-95fb7170bbd1";
 
 	}
