@@ -85,6 +85,8 @@
                 <tr>
                     <td colspan="3">Drug allergies: ${allergies}</td>
                 </tr>
+
+
                 <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
@@ -163,6 +165,30 @@
                     <td colspan="3">Past or current OI: ${iosResults}</td>
                 </tr>
                 <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                </tr>
+                    <td colspan="2">
+                        <table width="100%">
+                            <tr>
+                                <td>DEMO:</td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td>Reason: </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Date:</td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </td>
+
+                  <tr>
                     <td colspan="3">&nbsp;</td>
                 </tr>
                 <tr>
@@ -273,6 +299,24 @@
                     </td>
                 </tr>
 
+                <tr>
+                    <td>Clinical Notes: </td>
+                    <td colspan="2">
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Clinician Name: </td>
+                    <td colspan="2">
+
+                    </td>
+                </tr>
+                <tr>
+                   <td>Clinician Signature: </td>
+                   <td colspan="2">
+                   </td>
+                </tr>
             </table>
         </div>
 

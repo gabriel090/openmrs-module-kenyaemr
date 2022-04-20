@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
     /**
      * This Source Code Form is subject to the terms of the Mozilla Public License,
      * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -140,6 +149,31 @@
                 patientSummary.setFirstCd4("");
                 patientSummary.setFirstCd4Date("");
             }
+            //all vl results
+            CalculationResultMap vlResultsMap = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), Arrays.asList(patient.getId()), context);
+            Obs allVlResultValue = EmrCalculationUtils.obsResultForPatient(vlResultsMap, patient.getPatientId());
+            if(allVlResultValue != null){
+                patientSummary.setVlResults(allVlResultValue.getValueNumeric().toString());
+                patientSummary.setVlDates(formatDate(allVlResultValue.getObsDatetime()));
+
+            }
+            else {
+                patientSummary.setVlResults("");
+                patientSummary.setVlDates("");
+            }
+
+            //all cd4 count
+            CalculationResultMap allCd4CountMap = Calculations.allObs(Dictionary.getConcept(Dictionary.CD4_COUNT), Arrays.asList(patient.getId()), context);
+            Obs allCd4Value = EmrCalculationUtils.obsResultForPatient(allCd4CountMap, patient.getPatientId());
+            if(allCd4Value != null){
+                patientSummary.setCd4Results(allCd4Value.getValueNumeric().toString());
+                patientSummary.setCd4Dates(formatDate(allCd4Value.getObsDatetime()));
+
+            }
+            else {
+                patientSummary.setCd4Results("");
+                patientSummary.setCd4Dates("");
+            }
             //date enrolled into care
             CalculationResultMap enrolled = Calculations.firstEnrollments(hivProgram, Arrays.asList(patient.getPatientId()), context);
             PatientProgram program = EmrCalculationUtils.resultForPatient(enrolled, patient.getPatientId());
@@ -210,7 +244,7 @@
                 patientSummary.setDateEntryPoint("");
             }
             ///TB Start date
-            CalculationResultMap tbConfirmation = Calculations.lastObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getPatientId()), context);
+            CalculationResultMap tbConfirmation = Calculations.firstObs(Dictionary.getConcept(Dictionary.TB_START_DATE), Arrays.asList(patient.getPatientId()), context);
             Obs tbDateConfirmed = EmrCalculationUtils.obsResultForPatient(tbConfirmation, patient.getPatientId());
             if(tbDateConfirmed != null) {
                 patientSummary.setDateEnrolledInTb(formatDate(tbDateConfirmed.getObsDatetime()));
@@ -298,7 +332,7 @@
                     }
                 }
             }
-            //stiScreening
+
             CalculationResultMap alergies = Calculations.allObs(Dictionary.getConcept("160643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
             ListResult allergyResults = (ListResult) alergies.get(patient.getPatientId());
             List<Obs> listOfAllergies = CalculationUtils.extractResultValues(allergyResults);
@@ -308,6 +342,7 @@
             }
             else if(listOfAllergies.size() == 1){
                 allergies = listOfAllergies.get(0).getValueCoded().getName().getName();
+
             }
             else{
                 for (Obs obs : listOfAllergies) {
@@ -316,7 +351,6 @@
                     }
                 }
             }
-
             //previous art details
             CalculationResultMap previousArt = Calculations.lastObs(Dictionary.getConcept("160533AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), Arrays.asList(patient.getPatientId()), context);
             Obs previousArtObs = EmrCalculationUtils.obsResultForPatient(previousArt,patient.getPatientId());
@@ -625,15 +659,15 @@
                 }
             }
         //most recent cd4
-            CalculationResult cd4Results = EmrCalculationUtils.evaluateForPatient(LastCd4CountDateCalculation.class, null, patient);
-            if(cd4Results != null && cd4Results.getValue() != null){
-                patientSummary.setMostRecentCd4(((Obs) cd4Results.getValue()).getValueNumeric().toString());
-                patientSummary.setMostRecentCd4Date(formatDate(((Obs) cd4Results.getValue()).getObsDatetime()));
-            }
-            else{
-                patientSummary.setMostRecentCd4("");
-                patientSummary.setMostRecentCd4Date("");
-            }
+//            CalculationResult cd4Results = EmrCalculationUtils.evaluateForPatient(LastCd4CountDateCalculation.class, null, patient);
+//            if(cd4Results != null && cd4Results.getValue() != null){
+//                patientSummary.setMostRecentCd4(((Obs) cd4Results.getValue()).getValueNumeric().toString());
+//                patientSummary.setMostRecentCd4Date(formatDate(((Obs) cd4Results.getValue()).getObsDatetime()));
+//            }
+//            else{
+//                patientSummary.setMostRecentCd4("");
+//                patientSummary.setMostRecentCd4Date("");
+//            }
 
 
             //most recent viral load
@@ -747,6 +781,10 @@
             model.addAttribute("programs", patientSummary.getClinicsEnrolled());
             model.addAttribute("recentCd4Count", patientSummary.getMostRecentCd4());
             model.addAttribute("recentCd4CountDate", patientSummary.getMostRecentCd4Date());
+            model.addAttribute("vlDates", patientSummary.getVlDates());
+            model.addAttribute("vlResults", patientSummary.getVlResults());
+            model.addAttribute("cd4Results", patientSummary.getCd4Results());
+            model.addAttribute("cd4Dates", patientSummary.getCd4Dates());
             model.addAttribute("recentVl", viralLoadValue);
             model.addAttribute("recentVlDate", viralLoadDate);
             model.addAttribute("deadDeath", dead);
@@ -759,8 +797,6 @@
             model.addAttribute("clinicValues", clinicValues);
             model.addAttribute("firstRegimen", firstRegimen);
             model.addAttribute("chronicDisease", chronicDisease);
-
-
         }
 
         private String formatDate(Date date) {

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
     /**
      * This Source Code Form is subject to the terms of the Mozilla Public License,
      * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -34,6 +43,11 @@
         private String whoStagingAtEnrollment;
         private String patientEntryPoint;
         private String dateEntryPoint;
+        private String vlResults;
+        private String vlDates;
+        private String cd4Dates;
+        private String cd4Results;
+
         private String transferInFacility;
         private String transferInDate;
         private String nameOfTreatmentSupporter;
@@ -97,7 +111,7 @@
         public PatientSummary() {
         }
 
-        public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date,String dateEnrolledInTb,String dateCompletedInTb, String dateEnrolledIntoCare, String whoStagingAtEnrollment, String patientEntryPoint, String dateEntryPoint, String transferInStatus,String tbScreeningOutcome, String stiScreeningOutcome, String kDoDCadre,String kDoDUnit ,String kDoDNumber,String kDoDRank, String caxcScreeningOutcome ,String transferInDate,String pulseRate,String bmi,String lmp, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate, String weightAtArtStart,String familyProtection, String heightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate, String bloodPressure,String respiratoryRate,String oxygenSaturation) {
+        public PatientSummary(Set<PersonName> names, String upn, String birthDate, Integer age, String maritalStatus, String hivConfrimedDate, String firstCd4, String firstCd4Date,String dateEnrolledInTb,String dateCompletedInTb, String dateEnrolledIntoCare, String whoStagingAtEnrollment,String cd4Dates, String cd4Results, String patientEntryPoint,String vlDates,String vlResults, String dateEntryPoint, String transferInStatus,String tbScreeningOutcome, String stiScreeningOutcome, String kDoDCadre,String kDoDUnit ,String kDoDNumber,String kDoDRank, String caxcScreeningOutcome ,String transferInDate,String pulseRate,String bmi,String lmp, String nameOfTreatmentSupporter, String relationshipToTreatmentSupporter, String contactOfTreatmentSupporter, String drigAllergies, String previousArt, String dateStartedArt, String artPurpose, String clinicalStageAtArtStart, String currentCd4, String purposeDrugs, String purposeDate, String weightAtArtStart,String familyProtection, String heightAtArtStart, String currentRegimen, List<String> ois, String dateOfReport, String clinicName, String mflCode, String gender, String firstRegimen, String cd4AtArtStart, String currentArtRegimen, String currentWhoStaging, String onCtx, String dapsone, String onIpt, String clinicsEnrolled, String mostRecentCd4, String mostRecentCd4Date, String mostRecentVl, String mostRecentVlDate, String artInterruptions, String artInterruptionReason, String artInterruptionDate, String substitutionWithFirstLine, String substitutionWithFirstLineReason, String substitutionWithFirstLineDate, String switchToSecondLineRegimen, String switchToSecondLineRegimenReason, String switchToSecondLineRegimenDate, String transferOutDate, String deathDate, String nextAppointmentDate, String bloodPressure,String respiratoryRate,String oxygenSaturation) {
             this.names = names;
             this.upn = upn;
             this.birthDate = birthDate;
@@ -116,6 +130,10 @@
             this.whoStagingAtEnrollment = whoStagingAtEnrollment;
             this.patientEntryPoint = patientEntryPoint;
             this.dateEntryPoint = dateEntryPoint;
+            this.vlDates =vlDates;
+            this.cd4Dates = cd4Dates;
+            this.cd4Results = cd4Results;
+            this.vlResults = vlResults;
             this.transferInFacility = transferInStatus;
             this.transferInDate = transferInDate;
             this.nameOfTreatmentSupporter = nameOfTreatmentSupporter;
@@ -285,6 +303,35 @@
             this.dateEntryPoint = dateEntryPoint;
         }
 
+        public String getVlResults() {
+            return vlResults;
+        }
+
+        public void setVlResults(String vlResults) {
+            this.vlResults = vlResults;
+        }
+        public String getVlDates() {
+            return vlDates;
+        }
+
+        public void setVlDates(String vlDates) {
+            this.vlDates = vlDates;
+        }
+
+        public String getCd4Results() {
+            return cd4Results;
+        }
+
+        public void setCd4Results(String cd4Results) {
+            this.cd4Results = cd4Results;
+        }
+        public String getCd4Dates() {
+            return cd4Dates;
+        }
+
+        public void setCd4Dates(String cd4Dates) {
+            this.cd4Dates = cd4Dates;
+        }
         public String getTransferInFacility() {
             return transferInFacility;
         }
