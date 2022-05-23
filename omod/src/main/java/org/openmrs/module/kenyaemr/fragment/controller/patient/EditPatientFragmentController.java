@@ -100,8 +100,8 @@ public class EditPatientFragmentController {
 
 		//create list of countries
 		List<Concept> countryList = new ArrayList<Concept>();
-		countryList.add(Dictionary.getConcept("162883AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-		countryList.add(Dictionary.getConcept("162884AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
+		countryList.add(Dictionary.getConcept("162883AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));//Kenya
+		countryList.add(Dictionary.getConcept("162884AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));//Uganda
 		countryList.add(Dictionary.getConcept("165639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 
 		model.addAttribute("countryOptions", countryList);
